@@ -5,7 +5,7 @@ import toggleListOpen from '../decorators/toggleListOpen'
 class ArticleList extends Component {
 
     static propTypes = {
-
+        //Теперь компонент расчитывает на openItemId и toggleOpen - рекомендую их тоже описать
         articles: PropTypes.array
     }
 
