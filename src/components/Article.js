@@ -1,30 +1,32 @@
-import React, { Component } from 'react'
+import React, { Component, PropTypes } from 'react'
 import CommentList from './CommentList'
 
-export default class Article extends Component {
+class Article extends Component {
 
-    state = {
-        isOpen: false
+    static propTypes = {
+
+        article: PropTypes.shape({
+
+            id: PropTypes.string.isRequired,
+            date: PropTypes.string.isRequired,
+            title: PropTypes.string.isRequired,
+            text: PropTypes.string.isRequired,
+            comments: PropTypes.array
+        })
     }
 
     render() {
-        const { article } = this.props
-        const body = this.state.isOpen ? <section>{article.text}</section> : null
+
+        const { article: {text, title, comments}, isOpen, toggleOpen } = this.props
+        const body = isOpen ? <section>{text}<CommentList comments={comments} /></section> : null
 
         return (
             <div>
-                <h3 onClick = {this.handleClick}>{article.title}</h3>
+                <h3 onClick = {toggleOpen}>{title}</h3>
                 {body}
-                <CommentList comments = {article.comments} />
             </div>
         )
     }
-
-    handleClick = (ev) => {
-
-        this.setState({
-
-            isOpen: !this.state.isOpen
-        })
-    }
 }
+
+export default Article

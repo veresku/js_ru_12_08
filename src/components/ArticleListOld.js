@@ -1,22 +1,21 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component, PropTypes, createClass } from 'react'
 import Article from './Article'
-import toggleListOpen from '../decorators/toggleListOpen'
+import toggleListOpen from '../mixins/toggleListOpen'
 
-class ArticleList extends Component {
+const ArticleList = createClass ({
 
-    static propTypes = {
+    mixins: [toggleListOpen],
 
-        articles: PropTypes.array
-    }
+    render: function() {
 
-    render() {
+        const { articles } = this.props
+        const { openItemId } = this.state
 
-        const {articles, openItemId, toggleOpen} = this.props
         const articleItems = articles.map(articleObject =>
             <li key={articleObject.id}>
                 <Article article = {articleObject}
                          isOpen = {openItemId === articleObject.id}
-                         toggleOpen = {toggleOpen(articleObject.id)}
+                         toggleOpen = {this.toggleOpen(articleObject.id)}
                 />
             </li>
         )
@@ -28,7 +27,7 @@ class ArticleList extends Component {
             </ul>
         )
     }
-}
+})
 
-export default toggleListOpen(ArticleList)
+export default ArticleList
 
