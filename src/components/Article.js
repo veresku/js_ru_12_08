@@ -1,18 +1,13 @@
 import React, { Component, PropTypes } from 'react'
 import CommentList from './CommentList'
+//import toggleOpen from '../decorators/toggleOpen'
 
 class Article extends Component {
 
     static propTypes = {
-
-        article: PropTypes.shape({
-
-            id: PropTypes.string.isRequired,
-            date: PropTypes.string.isRequired,
-            title: PropTypes.string.isRequired,
-            text: PropTypes.string.isRequired,
-            comments: PropTypes.array
-        })
+        article: PropTypes.object.isRequired,
+        isOpen: PropTypes.bool,
+        toggleOpen: PropTypes.func
     }
 
     render() {

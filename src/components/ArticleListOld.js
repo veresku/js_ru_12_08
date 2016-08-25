@@ -1,21 +1,18 @@
 import React, { Component, PropTypes, createClass } from 'react'
 import Article from './Article'
-import toggleListOpen from '../mixins/toggleListOpen'
+import accordion from '../mixins/accordion'
 
 const ArticleList = createClass ({
 
-    mixins: [toggleListOpen],
+    mixins: [accordion],
 
     render: function() {
 
-        const { articles } = this.props
-        const { openItemId } = this.state
-
-        const articleItems = articles.map(articleObject =>
+        const articleItems = this.props.articles.map(articleObject =>
             <li key={articleObject.id}>
                 <Article article = {articleObject}
-                         isOpen = {openItemId === articleObject.id}
-                         toggleOpen = {this.toggleOpen(articleObject.id)}
+                         isOpen = {this.state.openItemId === articleObject.id}
+                         toggleOpen = {this.toggleOpenItem(articleObject.id)}
                 />
             </li>
         )
