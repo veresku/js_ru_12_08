@@ -36,20 +36,57 @@ class Container extends Component {
     }
 
     handleChange = (selected) => {
-        const { articles, filterByArticle } = this.props
-        filterByArticle(articles, selected)
+        const { filterByArticle } = this.props
+        filterByArticle(selected)
     }
 }
 
-export default connect((state) => {
+let filterArticles = (state) => {
 
     const {articles, filters} = state
-        return {
-            articles: articles,
-            selected: filters.selected,
-            filteredArticles: filters.articles.length?  filters.articles : articles,
+
+    return articles.filter(article => {
+
+        let result = false
+
+        if( filters.selected !== null && filters.selected.length ) {
+
+            for (let i = 0; i < filters.selected.length; i++) {
+
+                if(filters.selected[i].value === article.id) {
+                    result = true
+                    break
+                }
+            }
         }
+
+        if( filters.from != null && filters.to != null ) {
+
+            const dateFrom = new Date(filters.from)
+            const dateTo = new Date(filters.to)
+            const dateArticle = new Date(article.date)
+
+            if(dateArticle >= dateFrom && dateArticle <= dateTo) {
+                result = true
+            } else {
+                result = false
+            }
+        }
+
+        return result
+    })
+}
+
+export default connect((state) => {
+    const {articles, filters} = state
+    const filteredArticles = filterArticles(state)
+
+    return {
+        articles: articles,
+        selected: filters.selected,
+        filteredArticles: (filters.selected || filters.from || filters.to) ? filteredArticles : articles
+    }
     }, {
-    filterByArticle
+        filterByArticle
     }
 )(Container)

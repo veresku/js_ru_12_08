@@ -35,16 +35,15 @@ class DatePeriod extends Component {
     handleDayClick = (e, day) => {
         const range = DateUtils.addDayToRange(day, this.props);
 
-        const { articles, filterByDate } = this.props
-        filterByDate(articles, range)
+        const { filterByDate } = this.props
+        filterByDate(range)
     }
 }
 
 export default connect((state) => {
 
-        const {articles, filters} = state
+        const {filters} = state
         return {
-            articles: articles,
             from: filters.from,
             to: filters.to,
         }
