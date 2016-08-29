@@ -1,50 +1,54 @@
-import React from 'react';
-import moment from 'moment';
-import DayPicker, { DateUtils } from 'react-day-picker';
-
+import React, { Component, PropTypes } from 'react'
+import DayPicker, { DateUtils } from 'react-day-picker'
 import 'react-day-picker/lib/style.css';
+import { connect } from 'react-redux'
+import { filterByDate } from '../AC/filter'
 
-export default class Range extends React.Component {
-    constructor(props) {
-        super(props);
-        this.handleDayClick = this.handleDayClick.bind(this);
-        this.handleResetClick = this.handleResetClick.bind(this);
+class DatePeriod extends Component {
+    static propTypes = {
+
     }
-    state = {
-        from: null,
-        to: null,
-    };
-    handleDayClick(e, day) {
-        const range = DateUtils.addDayToRange(day, this.state);
-        this.setState(range);
-    }
-    handleResetClick(e) {
-        e.preventDefault();
-        this.setState({
-            from: null,
-            to: null,
-        });
-    }
+
     render() {
-        const { from, to } = this.state;
         return (
-            <div className="RangeExample">
-                { !from && !to && <p>Please select the <strong>first day</strong>.</p> }
-                { from && !to && <p>Please select the <strong>last day</strong>.</p> }
-                { from && to &&
-                <p>
-                    You chose from { moment(from).format('L') } to { moment(to).format('L') }.
-                    { ' ' }<a href="#" onClick={ this.handleResetClick }>Reset</a>
-                </p>
-                }
+            <div>
                 <DayPicker
                     ref="daypicker"
-                    numberOfMonths={ 2 }
-                    selectedDays={ day => DateUtils.isDayInRange(day, { from, to }) }
+                    selectedDays={ this.handleSelect}
                     onDayClick={ this.handleDayClick }
                 />
+                {this.getRangeTitle()}
             </div>
         );
     }
 
+    handleSelect = day => DateUtils.isDayInRange(day, this.props)
+
+    getRangeTitle() {
+        const { from, to } = this.props
+        const fromText = from && `Start date: ${from.toDateString()}`
+        const toText = to && `Finish date: ${to.toDateString()}`
+
+        return <p>{fromText} {toText}</p>
+    }
+
+    handleDayClick = (e, day) => {
+        const range = DateUtils.addDayToRange(day, this.props);
+
+        const { articles, filterByDate } = this.props
+        filterByDate(articles, range)
+    }
 }
+
+export default connect((state) => {
+
+        const {articles, filters} = state
+        return {
+            articles: articles,
+            from: filters.from,
+            to: filters.to,
+        }
+    }, {
+        filterByDate
+    }
+)(DatePeriod)

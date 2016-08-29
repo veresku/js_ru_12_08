@@ -1,6 +1,8 @@
 import React, { Component, PropTypes } from 'react'
 import CommentList from './CommentList'
-//import toggleOpen from '../decorators/toggleOpen'
+import toggleOpen from '../decorators/toggleOpen'
+import { connect } from 'react-redux'
+import { deleteArticle } from '../AC/articles'
 
 class Article extends Component {
 
@@ -12,16 +14,24 @@ class Article extends Component {
 
     render() {
 
-        const { article: {text, title, comments}, isOpen, toggleOpen } = this.props
+        const { article: {text, title, date, comments}, isOpen, toggleOpen } = this.props
         const body = isOpen ? <section>{text}<CommentList comments={comments} /></section> : null
 
         return (
             <div>
                 <h3 onClick = {toggleOpen}>{title}</h3>
+                <p>{date}</p>
+                <a href = "#" onClick = {this.handleDelete}>delete article</a>
                 {body}
             </div>
         )
     }
+
+    handleDelete = ev => {
+        ev.preventDefault()
+        const { deleteArticle, article } = this.props
+        deleteArticle(article.id)
+    }
 }
 
-export default Article
+export default connect(null, { deleteArticle })(Article)
